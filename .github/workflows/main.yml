@@ -30,8 +30,8 @@ jobs:
           context: ./src
           file:  ./src/Dockerfile
           tags: 
-            fernandojpessoa/api-produto:latest
-            fernandojpessoa/api-produto:${{ github.run_number }}
+            fernandojpessoa/api-produto:v1
+            #fernandojpessoa/api-produto:${{ github.run_number }}
           push: true
           
   
