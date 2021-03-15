@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:  # troca de versão
+      maxSurge: 2  # 2 com os novos pods de 2 em 2 pode ser percentagem "25%"
+      maxUnavailable: 2 # detona 2 pods e atualiza
+
+  replicas: 2    #2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"
+
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: fernandojpessoa/api-produto:v1
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "128m"
+          limits:
+            memory: "250Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 8080
+        env:
+          - name : MONGODB_URI
+            value: mongodb://mongouser:mongopwd@mongodb-service:27017/admin
+        
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /health
+
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 2
+
+
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /read
+
