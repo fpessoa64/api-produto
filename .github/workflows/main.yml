@@ -40,7 +40,6 @@ jobs:
           file: ./src/Dockerfile
           tags: |
             fernandojpessoa/api-produto:v1
-            #fabricioveronez/api-produto:${{ github.run_number }}
           push: true
   CD:
     needs: [CI]
